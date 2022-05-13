@@ -27,6 +27,7 @@
 
                 scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+		
 		textureLoader = new THREE.TextureLoader();		
                 physical_texture = textureLoader.load('media/earth_surface_2048.jpg');
 
@@ -34,8 +35,8 @@
 					{
 						map: physical_texture,
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
-						specular: 0x222222,
-						shininess: 50,
+						//specular: 0x222222,
+						//shininess: 50,
 						//specularMap: textureLoader.load("media/earth_specular_2048.jpg")
 					}
 				);
