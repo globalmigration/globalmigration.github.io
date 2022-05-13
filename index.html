@@ -18,7 +18,7 @@
 	var stats;
 	var mEarthMaterial, physical_texture;
 	var textureLoader;
-	 var mDirectionallight;
+	var mDirectionallight;
         function initialize() {
 		renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
 		renderer.setClearColor( "#0339fc", 0 ); // the default
@@ -43,11 +43,14 @@
                 mEarth = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 32 ), mEarthMaterial );
                 
                 scene.add( mEarth );
-
+		
+		var mAmbientLight = new THREE.AmbientLight( 0x333333 );
+		scene.add( mAmbientLight );
+		
                 mDirectionallight = new THREE.DirectionalLight( 0xBBBBBB );
-				mDirectionallight.position.y = 5;
-				mDirectionallight.position.z = 13;
-				scene.add( mDirectionallight );
+		mDirectionallight.position.y = 5;
+		mDirectionallight.position.z = 13;
+		scene.add( mDirectionallight );
 
                 camera.position.z = 5;
 				
@@ -81,7 +84,11 @@
 		requestAnimationFrame( animate );
 	}
 
-			
+	if ( THREE.WEBGL.isWebGLAvailable() == false )
+		document.body.appendChild( THREE.WEBGL.getWebGLErrorMessage() );
+	else
+		initialize();	
+	  
 	function onWindowResized() {
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		camera.aspect = window.innerWidth / window.innerHeight;
