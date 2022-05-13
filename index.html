@@ -16,5 +16,81 @@
     Test Test
     Test1 - Lorenz -df
     Test2 Test3
+    <script>
+        var scene, renderer, camera;
+		var mEarth, mGDP;	
+		var controls;
+		var stats;
+        function initialize() {
+				renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
+				renderer.setClearColor( "#0339fc", 0 ); // the default
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setPixelRatio( window.devicePixelRatio );
+
+                scene = new THREE.Scene();
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+				
+                physical_texture = textureLoader.load( 'media/earth_surface_2048.jpg' );
+
+                mEarthMaterial = new THREE.MeshPhongMaterial(
+					{
+						map: physical_texture,
+						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
+						specular: 0x222222,
+						shininess: 50,
+						//specularMap: textureLoader.load("media/earth_specular_2048.jpg")
+					}
+				);
+
+                mEarth = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 32 ), mEarthMaterial );
+                
+                scene.add( mEarth );
+
+                mDirectionallight = new THREE.DirectionalLight( 0xBBBBBB );
+				mDirectionallight.position.y = 5;
+				mDirectionallight.position.z = 13;
+				scene.add( mDirectionallight );
+
+                camera.position.z = 5;
+				
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.left = '0px';
+				stats.domElement.style.zIndex = 100;
+				document.body.appendChild( stats.domElement );
+				
+				
+				controls = new THREE.TrackballControls( camera, renderer.domElement );
+				controls.rotateSpeed = 1.0;
+				controls.zoomSpeed = 1.2;
+				controls.panSpeed = 0.8;
+				controls.noZoom = false;
+				controls.noPan = false;
+				controls.dynamicDampingFactor = 0.3;
+				controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
+				
+				
+				window.addEventListener( 'resize', onWindowResized, false );
+
+                animate();
+        }
+
+        function animate() {
+			controls.update();
+			renderer.render( scene, camera );
+			stats.update();
+			requestAnimationFrame( animate );
+		}
+
+			
+		function onWindowResized() {
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();		
+			controls.handleResize();
+
+			}
+    </script>
 </body>
 </html>
