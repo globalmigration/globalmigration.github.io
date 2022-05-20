@@ -41,8 +41,8 @@
 						//specularMap: textureLoader.load("media/earth_specular_2048.jpg")
 					}
 				);
-
-                mEarth = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 32 ), mEarthMaterial );
+		var sphereRadius = 1;
+                mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius, 32, 32 ), mEarthMaterial );
                 const material = new THREE.LineBasicMaterial({
 			color: 0x0000ff
 		});
@@ -66,8 +66,10 @@
 		mDirectionallight.position.z = 13;
 		scene.add( mDirectionallight );
 		
-		setArc3D(0, 0, 1, 'red', True);
-		
+		var pointStart = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
+		var pointEnd = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
+		var newArc1 = setArc3D(pointStart, pointEnd, 50, "lime", false);
+		sphere.add(newArc1);
                 camera.position.z = 5;
 				
 		stats = new Stats();
