@@ -19,6 +19,8 @@
 	var mEarthMaterial, physical_texture;
 	var textureLoader;
 	var mDirectionallight;
+	
+	var pointStart, pointEnd, newArc1;
         function initialize() {
 		renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
 		renderer.setClearColor( "#0339fc", 0 ); // the default
@@ -57,9 +59,9 @@
 		mDirectionallight.position.z = 13;
 		scene.add( mDirectionallight );
 		
-		var pointStart = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
-		var pointEnd = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
-		var newArc1 = setArc3D(pointStart, pointEnd, 50, "lime", false);
+		pointStart = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
+		pointEnd = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
+		newArc1 = setArc3D(pointStart, pointEnd, 50, "lime", false);
 		sphere.add(newArc1);
                 camera.position.z = 5;
 				
@@ -115,16 +117,19 @@
 		  var angle = pointStart.angleTo(pointEnd); // get the angle between vectors
 		  if (clockWise) angle = angle - Math.PI * 2;  // if clockWise is true, then we'll go the longest path
 		  var angleDelta = angle / (smoothness - 1); // increment
-
-		  var geometry = new THREE.BufferGeometry();
+		
+		//var geometry = new THREE.Geometry();
+		  var pts = [];
 		  for (var i = 0; i < smoothness; i++) {
-		    geometry.vertices.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))  // this is the key operation
+		    pts.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))
 		  }
+		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
 
 		  var arc = new THREE.Line(geometry, new THREE.LineBasicMaterial({
 		    color: color
 		  }));
 		  return arc;
+	
 		}
     </script>
 </body>
