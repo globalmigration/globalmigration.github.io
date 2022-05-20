@@ -62,7 +62,7 @@
 		pointStart = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
 		pointEnd = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
 		newArc1 = setArc3D(pointStart, pointEnd, 50, "lime", false);
-		sphere.add(newArc1);
+		mEarth.add(newArc1);
                 camera.position.z = 5;
 				
 		stats = new Stats();
