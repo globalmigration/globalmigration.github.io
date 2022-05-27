@@ -7,29 +7,38 @@
     <title>Globale Migration</title>
 </head>
 <body>
+	<div id='politicalButton' onclick="changeTextureToPolitical()"  class="button">
+		<span>Political Map</span>
+	</div>
     <script src="js/three.min.js"></script>
     <script src="js/WebGL.js"></script>
     <script src="js/TrackballControls.js"></script>
     <script src="js/stats.min.js"></script>
-	<script src="js/THREE.MeshLine.js"></script>
+	<script src="js/require.js"></script>
+	<script src="js/three.MeshLine.js"></script>
+	
     <script>
-        var scene, renderer, camera;
+	
+    var scene, renderer, camera;
 	var mEarth, mGDP;	
 	var controls;
 	var stats;
 	var mEarthMaterial, physical_texture;
 	var textureLoader;
 	var mDirectionallight;
+	var raycaster = new THREE.Raycaster();
+	var mousePos = new THREE.Vector2();
+	var group = new THREE.Group();
 	
 	var pointStart, pointEnd, newArc1;
-        function initialize() {
+    function initialize() {
 		renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
 		renderer.setClearColor( "#0339fc", 0 ); // the default
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.setPixelRatio( window.devicePixelRatio );
 		document.body.appendChild( renderer.domElement );
 		
-                scene = new THREE.Scene();
+        scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 		
 		textureLoader = new THREE.TextureLoader();		
@@ -38,6 +47,8 @@
                 mEarthMaterial = new THREE.MeshPhongMaterial(
 					{
 						map: physical_texture,
+						opacity: 0.7,
+						transparent:true
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
 						//specular: 0x222222,
 						//shininess: 50,
@@ -46,10 +57,7 @@
 				);
 		var sphereRadius = 1;
         mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius, 32, 32 ), mEarthMaterial );
-            const material = new THREE.LineBasicMaterial({
-				color: 0x0000ff
-			}
-		);
+           
 
         scene.add( mEarth );
 		
@@ -61,12 +69,17 @@
 		mDirectionallight.position.z = 13;
 		scene.add( mDirectionallight );
 		
+		//Linien der Migrationsströme zwischen den Regionen
 		pointStart = latlong2xyz(sphereRadius,48, 16);
 		pointEnd = latlong2xyz(sphereRadius,10, 16);
-		newArc1 = setArc3D(pointStart, pointEnd, 50, "lime", false,50);
-		mEarth.add(newArc1);
+		newArc1 = setArc3D(pointStart, pointEnd, 150, "lime", false,0.1);
+		
+		//var group = new THREE.Group();
+		group.add(newArc1);
+		mEarth.add(group);
         camera.position.z = 5;
-				
+		
+
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
 		stats.domElement.style.top = '0px';
@@ -82,10 +95,12 @@
 		controls.noPan = false;
 		controls.dynamicDampingFactor = 0.3;
 		controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
-						
+		
+		raycaster.params.Line.threshold = 0.1;
+		document.addEventListener( 'mousemove', onDocumentMouseMove );
 		window.addEventListener( 'resize', onWindowResized, false );
 
-                animate();
+        animate();
         }
 
         function animate() {
@@ -99,7 +114,27 @@
 		document.body.appendChild( THREE.WEBGL.getWebGLErrorMessage() );
 	else
 		initialize();	
-	  
+	 
+	function onDocumentMouseMove( event ) {
+		//console.log( "pageX: " + event.pageX + " pageY: " + event.pageY + " window.innerWidth: " + window.innerWidth + " window.innerHeight: " + window.innerHeight );
+		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
+		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
+		
+		//console.log( "mousePos.x: " + mousePos.x + " mousePos.y: " + mousePos.y );
+		
+		raycaster.setFromCamera( mousePos, camera );
+		var intersects = raycaster.intersectObjects( group.children );
+		// only if the ray intersects with an object
+		if ( intersects.length > 0 ) {
+		//show message-box with name of intersected object
+			alert( intersects[ 0 ].object );
+			//for all intersected objects, set color of line to red
+			for ( var i = 0; i < intersects.length; i++ ) {
+				intersects[ i ].object.material.color.set( 0xff0000 );
+			}
+		}
+	}
+
 	function onWindowResized() {
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		camera.aspect = window.innerWidth / window.innerHeight;
@@ -134,16 +169,27 @@
 		  var angleDelta = angle / (smoothness - 1); // increment
 		
 		//var geometry = new THREE.Geometry();
-		  var pts = [];
-		  for (var i = 0; i < smoothness; i++) {
+		var pts = [];
+		 for (var i = 0; i < smoothness; i++) {
 		    pts.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))
 		  }
-		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
+		 
+		   
+		  /*for (let j = 0; j < Math.PI; j += 2* Math.PI / 50) {
+			pts.push(new THREE.Vector3(Math.cos(j), Math.sin(j), 0));
+			}*/
 
-		  var arc = new THREE.MeshLine(geometry, new THREE.MeshLineMaterial({
+		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
+		  
+		  var line = new MeshLine()
+		  line.setGeometry(geometry);
+		  var arcMaterial = new MeshLineMaterial({
 		    color: color,
-			linewidth : lineWidth
-		  }));
+			lineWidth : lineWidth
+		  });
+		  
+		  const arc = new THREE.Mesh(line, arcMaterial);
+
 		  return arc;
 	
 		}
