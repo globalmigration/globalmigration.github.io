@@ -11,6 +11,7 @@
     <script src="js/WebGL.js"></script>
     <script src="js/TrackballControls.js"></script>
     <script src="js/stats.min.js"></script>
+	<script src="js/THREE.MeshLine.js"></script>
     <script>
         var scene, renderer, camera;
 	var mEarth, mGDP;	
@@ -44,26 +45,27 @@
 					}
 				);
 		var sphereRadius = 1;
-                mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius, 32, 32 ), mEarthMaterial );
-                const material = new THREE.LineBasicMaterial({
-			color: 0x0000ff
-		});
+        mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius, 32, 32 ), mEarthMaterial );
+            const material = new THREE.LineBasicMaterial({
+				color: 0x0000ff
+			}
+		);
 
-                scene.add( mEarth );
+        scene.add( mEarth );
 		
 		var mAmbientLight = new THREE.AmbientLight( 0x333333 );
 		scene.add( mAmbientLight );
 		
-                mDirectionallight = new THREE.DirectionalLight( 0xBBBBBB );
+        mDirectionallight = new THREE.DirectionalLight( 0xBBBBBB );
 		mDirectionallight.position.y = 5;
 		mDirectionallight.position.z = 13;
 		scene.add( mDirectionallight );
 		
-		pointStart = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
-		pointEnd = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize().multiplyScalar(sphereRadius);
-		newArc1 = setArc3D(pointStart, pointEnd, 50, "lime", false);
+		pointStart = latlong2xyz(sphereRadius,48, 16);
+		pointEnd = latlong2xyz(sphereRadius,10, 16);
+		newArc1 = setArc3D(pointStart, pointEnd, 50, "lime", false,50);
 		mEarth.add(newArc1);
-                camera.position.z = 5;
+        camera.position.z = 5;
 				
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
@@ -104,8 +106,21 @@
 		camera.updateProjectionMatrix();		
 		controls.handleResize();
 	}
-	    
-	function setArc3D(pointStart, pointEnd, smoothness, color, clockWise) {
+	
+	function latlong2xyz( radius, latitude, longitude ) {
+		var x = radius * Math.cos( deg2rad( longitude )) * Math.cos( deg2rad( latitude ) );
+		var z = radius * Math.sin( deg2rad( longitude ) ) * Math.cos( deg2rad( latitude ) );
+		var y = radius * Math.sin( deg2rad( latitude ) );
+		var vector = new THREE.Vector3( x, y, -z );
+		return vector;
+	}
+			
+	function deg2rad( degree ) {
+		var radians = degree * Math.PI/180;
+		return radians;
+	}
+
+	function setArc3D(pointStart, pointEnd, smoothness, color, clockWise, lineWidth) {
 		  // calculate a normal ( taken from Geometry().computeFaceNormals() )
 		  var cb = new THREE.Vector3(), ab = new THREE.Vector3(), normal = new THREE.Vector3();
 		  cb.subVectors(new THREE.Vector3(), pointEnd);
@@ -125,8 +140,9 @@
 		  }
 		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
 
-		  var arc = new THREE.Line(geometry, new THREE.LineBasicMaterial({
-		    color: color
+		  var arc = new THREE.MeshLine(geometry, new THREE.MeshLineMaterial({
+		    color: color,
+			linewidth : lineWidth
 		  }));
 		  return arc;
 	
