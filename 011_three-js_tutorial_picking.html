@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>three.js Picking</title>
+		<style>
+			canvas	{
+				width: 100%;
+				height: 100%
+			}
+			body	{
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="js/three.min.js"></script>
+		<script src="js/WebGL.js"></script>
+		<script src="js/TrackballControls.js"></script>
+		<script src="js/stats.min.js"></script>
+		
+		<script>
+			var scene, renderer, camera;
+			var mEarth;
+			
+			var controls;
+			var raycaster = new THREE.Raycaster();
+			var mousePos = new THREE.Vector2();
+			
+			var stats;
+			var city_system = new THREE.Group();
+			function initialize() {
+				var cities = [
+					{ name: "new york", longitude: -74, latitude: 40.7, population: 8.2 },
+					{ name: "london", longitude: 1, latitude: 51, population: 8.1 },
+					{ name: "cairo", longitude: 31, latitude: 30, population: 7.9 },
+					{ name: "buenos aires", longitude: -58, latitude: -35, population: 2.9 },
+					{ name: "cape town", longitude: 18.41, latitude: -33.9, population: 3.5 },
+					{ name: "tokyo", longitude: 139.7, latitude: 35.7, population: 9.0 },
+					{ name: "vienna", longitude: 16.36, latitude: 48.2, population: 1.76 }
+				]
+			
+				renderer = new THREE.WebGLRenderer( {antialias: true} );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				document.body.appendChild( renderer.domElement );
+				
+				scene = new THREE.Scene();
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
+				
+				var mEarthMaterial = new THREE.MeshBasicMaterial(
+					{
+						map: new THREE.TextureLoader().load( 'media/earth_surface_2048.jpg' )
+					}
+				);
+				
+				mEarth = new THREE.Mesh( new THREE.SphereGeometry( 1, 32, 32 ), mEarthMaterial );
+				
+				scene.add( mEarth );
+				
+				city_system = new THREE.Group();
+			
+				for( var cur_city_index=0; cur_city_index < cities.length; cur_city_index++ ) {
+					addCity( cities[cur_city_index].latitude, cities[cur_city_index].longitude, cities[cur_city_index].population, cities[cur_city_index].name );
+				}
+				
+				scene.add( city_system );
+				
+				camera.position.z = 5;
+				
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.left = '0px';
+				stats.domElement.style.zIndex = 100;
+				document.body.appendChild(stats.domElement);
+				
+				controls = new THREE.TrackballControls( camera, renderer.domElement );
+				controls.rotateSpeed = 1.0;
+				controls.zoomSpeed = 1.2;
+				controls.panSpeed = 0.8;
+				controls.noZoom = false;
+				controls.noPan = false;
+				controls.dynamicDampingFactor = 0.3;
+				controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
+				
+				window.addEventListener('resize', onWindowResized );
+				
+				raycaster.params.Line.threshold = 0.1;
+				
+				document.addEventListener( 'mousemove', onDocumentMouseMove );
+				
+				animate();
+			}
+			
+			function onDocumentMouseMove( event ) {
+				//console.log( "pageX: " + event.pageX + " pageY: " + event.pageY + " window.innerWidth: " + window.innerWidth + " window.innerHeight: " + window.innerHeight );
+				mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
+				mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
+				
+				//console.log( "mousePos.x: " + mousePos.x + " mousePos.y: " + mousePos.y );
+				
+				raycaster.setFromCamera( mousePos, camera );
+				var intersects = raycaster.intersectObjects( city_system.children );
+
+				// only if the ray intersects with an object
+				if ( intersects.length > 0 ) {
+					//show message-box with name of intersected object
+					alert( intersects[ 0 ].object.name );
+					//for all intersected objects, set color of line to red
+					for ( var i = 0; i < intersects.length; i++ ) {
+						intersects[ i ].object.material.color.set( 0xff0000 );
+					}
+				}
+			}
+		
+			function addCity( latitude, longitude, population, name ) {
+				
+				var points = [];
+
+				var vertexOfCityPos = latlong2xyz( 1, latitude, longitude );
+
+				points.push( vertexOfCityPos );
+
+				var scaleCityLine = population * 0.1 + 1;
+				var vertex2 = new THREE.Vector3(
+					vertexOfCityPos.x * scaleCityLine,
+					vertexOfCityPos.y * scaleCityLine,
+					vertexOfCityPos.z * scaleCityLine
+				);
+
+				points.push( vertex2 );
+				
+				var geometry = new THREE.BufferGeometry();
+				geometry.setFromPoints( points );
+
+				var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
+				line.name = name;
+				city_system.add( line );
+			}
+			
+			function latlong2xyz( radius, latitude, longitude ) {
+				var x = radius * Math.cos( deg2rad( longitude )) * Math.cos( deg2rad( latitude ) );
+				var z = radius * Math.sin( deg2rad( longitude ) ) * Math.cos( deg2rad( latitude ) );
+				var y = radius * Math.sin( deg2rad( latitude ) );
+				var vector = new THREE.Vector3( x, y, -z );
+				return vector;
+			}
+			
+			function deg2rad( degree ) {
+				var radians = degree * Math.PI/180;
+				return radians;
+			}
+			
+			function animate() {
+				controls.update();
+				renderer.render( scene, camera );
+				stats.update();
+				requestAnimationFrame( animate );
+			}
+			
+			if ( THREE.WEBGL.isWebGLAvailable() == false )
+				document.body.appendChild( THREE.WEBGL.getWebGLErrorMessage() );
+			else
+				initialize();
+			
+			function onWindowResized() {
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				controls.handleResize();
+			}
+			
+		</script>
+	</body>
+</html>

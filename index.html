@@ -3,19 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
     <title>Globale Migration</title>
+	<style>
+		canvas	{
+			width: 100%;
+			height: 100%
+		}
+		body	{
+			background-color: #000;
+			margin: 0px;
+			overflow: hidden;
+		}
+		
+				</style>
 </head>
 <body>
-	<div id='politicalButton' onclick="changeTextureToPolitical()"  class="button">
-		<span>Political Map</span>
-	</div>
+
     <script src="js/three.min.js"></script>
     <script src="js/WebGL.js"></script>
     <script src="js/TrackballControls.js"></script>
     <script src="js/stats.min.js"></script>
-	<script src="js/require.js"></script>
 	<script src="js/three.MeshLine.js"></script>
+	<script src="js/sweetalert.min.js"></script>
 	
     <script>
 	
@@ -29,11 +40,11 @@
 	var raycaster = new THREE.Raycaster();
 	var mousePos = new THREE.Vector2();
 	var group = new THREE.Group();
-	
-	var pointStart, pointEnd, newArc1;
+	var pointStart, pointEnd, newArc1, color;
+	var sphereRadius = 1;	
     function initialize() {
 		renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
-		renderer.setClearColor( "#0339fc", 0 ); // the default
+		//renderer.setClearColor( "#0339fc", 0 ); // the default
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.setPixelRatio( window.devicePixelRatio );
 		document.body.appendChild( renderer.domElement );
@@ -42,12 +53,12 @@
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 		
 		textureLoader = new THREE.TextureLoader();		
-                physical_texture = textureLoader.load('media/earth_surface_2048.jpg');
+        physical_texture = textureLoader.load('media/earth_surface_2048.jpg');
 
                 mEarthMaterial = new THREE.MeshPhongMaterial(
 					{
 						map: physical_texture,
-						opacity: 0.7,
+						opacity: 0.5,
 						transparent:true
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
 						//specular: 0x222222,
@@ -55,7 +66,7 @@
 						//specularMap: textureLoader.load("media/earth_specular_2048.jpg")
 					}
 				);
-		var sphereRadius = 1;
+		
         mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius, 32, 32 ), mEarthMaterial );
            
 
@@ -70,16 +81,29 @@
 		scene.add( mDirectionallight );
 		
 		//Linien der Migrationsströme zwischen den Regionen
-		pointStart = latlong2xyz(sphereRadius,48, 16);
-		pointEnd = latlong2xyz(sphereRadius,10, 16);
-		newArc1 = setArc3D(pointStart, pointEnd, 150, "lime", false,0.1);
+		var migration = [
+				{ name: "Europa - Nordafrika", longitude: 25, latitude: 14, anzahl: 1000},
+				{ name: "Europa - Nordamerika", longitude: 35, latitude: -100, anzahl: 5000},
+		]
+		pointStart = latlong2xyz(sphereRadius,48, 16); //immer gleich
 		
+		/*color = "lime"
+		pointEnd = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
+		newArc1 = setArc3D(pointStart, pointEnd, 150, "lime", false,migration[0].anzahl,migration[0].name);
+		
+		pointEnd2 = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
+		newArc2 = setArc3D(pointStart, pointEnd, 150, "lime", false,migration[0].anzahl,migration[0].name);*/
+		
+		for( var cur_region=0; cur_region < migration.length; cur_region++ ) {
+					setArc3D(pointStart,migration[cur_region].longitude, migration[cur_region].latitude,
+					 150,"lime",false,migration[cur_region].anzahl, migration[cur_region].name );
+				}
 		//var group = new THREE.Group();
-		group.add(newArc1);
-		mEarth.add(group);
+		//group.add(newArc1);
+		scene.add(group);
+
         camera.position.z = 5;
 		
-
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
 		stats.domElement.style.top = '0px';
@@ -96,26 +120,16 @@
 		controls.dynamicDampingFactor = 0.3;
 		controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
 		
-		raycaster.params.Line.threshold = 0.1;
-		document.addEventListener( 'mousemove', onDocumentMouseMove );
 		window.addEventListener( 'resize', onWindowResized, false );
+		raycaster.params.Line.threshold = 0.1;
+		document.addEventListener( 'mousedown', onDocumentMouseDown );
+		document.addEventListener( 'mousemove', onDocumentMouseMove );
 
         animate();
         }
 
-        function animate() {
-		controls.update();
-		renderer.render( scene, camera );
-		stats.update();
-		requestAnimationFrame( animate );
-	}
-
-	if ( THREE.WEBGL.isWebGLAvailable() == false )
-		document.body.appendChild( THREE.WEBGL.getWebGLErrorMessage() );
-	else
-		initialize();	
-	 
-	function onDocumentMouseMove( event ) {
+	
+	function onDocumentMouseDown( event ) {
 		//console.log( "pageX: " + event.pageX + " pageY: " + event.pageY + " window.innerWidth: " + window.innerWidth + " window.innerHeight: " + window.innerHeight );
 		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
 		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
@@ -127,12 +141,35 @@
 		// only if the ray intersects with an object
 		if ( intersects.length > 0 ) {
 		//show message-box with name of intersected object
-			alert( intersects[ 0 ].object );
+			alert( intersects[ 0 ].object.name );
 			//for all intersected objects, set color of line to red
-			for ( var i = 0; i < intersects.length; i++ ) {
-				intersects[ i ].object.material.color.set( 0xff0000 );
+			//intersects[0].object.material.color.set( 0xff0000 );
+			intersects[0].object.material.opacity = 0.5;
+			setTimeout(function () {
+				intersects[0].object.material.opacity =  1.0;
+			})
+		} 
+	}
+
+	function onDocumentMouseMove(){
+		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
+		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
+	}
+
+
+	function hoverLines(){
+		raycaster.setFromCamera( mousePos, camera );
+		var intersects = raycaster.intersectObjects( group.children );
+		for ( var i = 0; i < intersects.length; i++ ) {
+				intersects[ i ].object.material.transparent = true;
+				intersects[ i ].object.material.opacity = 0.5;
+				intersects[0].object.material.color.set( 0xff0000 );
+				setTimeout(function () {
+				intersects[0].object.material.opacity =  1.0;
+				intersects[0].object.material.color.set( 'Lime' );
+				
+			})
 			}
-		}
 	}
 
 	function onWindowResized() {
@@ -155,8 +192,9 @@
 		return radians;
 	}
 
-	function setArc3D(pointStart, pointEnd, smoothness, color, clockWise, lineWidth) {
+	function setArc3D(pointStart, longEnd, latEnd, smoothness, color, clockWise, lineWidth,name) {
 		  // calculate a normal ( taken from Geometry().computeFaceNormals() )
+		  pointEnd = latlong2xyz(sphereRadius,longEnd, latEnd);
 		  var cb = new THREE.Vector3(), ab = new THREE.Vector3(), normal = new THREE.Vector3();
 		  cb.subVectors(new THREE.Vector3(), pointEnd);
 		  ab.subVectors(pointStart, pointEnd);
@@ -181,6 +219,7 @@
 
 		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
 		  
+		  lineWidth = lineWidth * 0.00001;
 		  var line = new MeshLine()
 		  line.setGeometry(geometry);
 		  var arcMaterial = new MeshLineMaterial({
@@ -189,10 +228,27 @@
 		  });
 		  
 		  const arc = new THREE.Mesh(line, arcMaterial);
-
-		  return arc;
+		  arc.name = name;
+		  arc.anzahl = lineWidth;
+		  arc.raycast = MeshLineRaycast;
+		  group.add( arc );
+		  
+		  //return arc;
 	
 		}
+
+	function animate() {
+		controls.update();
+		hoverLines();
+		renderer.render( scene, camera );
+		stats.update();
+		requestAnimationFrame( animate );
+	}
+
+	if ( THREE.WEBGL.isWebGLAvailable() == false )
+		document.body.appendChild( THREE.WEBGL.getWebGLErrorMessage() );
+	else
+		initialize();
     </script>
 </body>
 </html>
