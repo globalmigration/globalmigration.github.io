@@ -53,15 +53,13 @@
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 		
 		textureLoader = new THREE.TextureLoader();		
-        physical_texture = textureLoader.load('media/backgroundmap.png');
-
+        physical_texture = textureLoader.load('media/earth_surface_2048.jpg');
+		region_texture = textureLoader.load('media/regionmap.png');
                 mEarthMaterial = new THREE.MeshPhongMaterial(
 					{
-						map: physical_texture,
+						map: region_texture,
 						opacity: 0.5,
-						transparent:true,
-						//displacementMap: textureLoader.load( "media/displacementmap.png" ),
-						//displacementScale: -0.1,
+						transparent:true
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
 						//specular: 0x222222,
 						//shininess: 50,
