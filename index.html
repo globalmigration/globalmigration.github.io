@@ -54,10 +54,10 @@
 		
 		textureLoader = new THREE.TextureLoader();		
         physical_texture = textureLoader.load('media/earth_surface_2048.jpg');
-		region_texture = textureLoader.load('media/regionmap.png');
+
                 mEarthMaterial = new THREE.MeshPhongMaterial(
 					{
-						map: region_texture,
+						map: physical_texture,
 						opacity: 0.5,
 						transparent:true
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
