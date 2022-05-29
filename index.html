@@ -59,7 +59,9 @@
 					{
 						map: physical_texture,
 						opacity: 0.5,
-						transparent:true
+						transparent:false,
+						displacementMap: textureLoader.load( "media/displacementmap.png" ),
+						displacementScale: -0.1,
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
 						//specular: 0x222222,
 						//shininess: 50,
