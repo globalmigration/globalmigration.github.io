@@ -60,26 +60,28 @@
 					{
 						map: region_texture,
 						opacity: 1,
-						transparent:true
-						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
-						//specular: 0x222222,
-						//shininess: 50,
-						//specularMap: textureLoader.load("media/earth_specular_2048.jpg")
+						transparent:true,
+						//displacementMap: textureLoader.load( "media/oceanmap.png" ),
+						//displacementScale: -0.2,
+						specular: 0x3737aa,
+						shininess: 45,
+						specularMap: textureLoader.load("media/specularmap.png")
 					}
 				);
+
+		
 		
         mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius, 32, 32 ), mEarthMaterial );
-           
 
         scene.add( mEarth );
 		
 		var mAmbientLight = new THREE.AmbientLight( 0x333333,5 );
 		scene.add( mAmbientLight );
 		
-        mDirectionallight = new THREE.DirectionalLight( 0xBBBBBB );
-		mDirectionallight.position.y = 5;
+        mDirectionallight = new THREE.DirectionalLight( 0xBBBBBB, 0.5 );
+		mDirectionallight.position.y = -5;
 		mDirectionallight.position.z = 13;
-		//scene.add( mDirectionallight );
+		scene.add( mDirectionallight );
 		
 		//Linien der Migrationsströme zwischen den Regionen
 		var migration = [
