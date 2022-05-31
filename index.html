@@ -59,7 +59,7 @@
                 mEarthMaterial = new THREE.MeshPhongMaterial(
 					{
 						map: region_texture,
-						opacity: 0.8,
+						opacity: 1,
 						transparent:true
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
 						//specular: 0x222222,
@@ -83,22 +83,22 @@
 		
 		//Linien der Migrationsströme zwischen den Regionen
 		var migration = [
-				{ name: "Australien und Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150},
-				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423},
-				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199},
-				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134},
-				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299},
-				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326},
-				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114},
-				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477},
-				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919},
-				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855},
-				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729},
-				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667},
-				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857},
-				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456},
-				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988},
-				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480}
+				{ name: "Australien und Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150, Migranten: 385150},
+				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423, Migranten: 897423},
+				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199, Migranten: 397199},
+				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134},
+				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299, Migranten: 1851299},
+				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326, Migranten: 1658326},
+				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114, Migranten: 902114},
+				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477},
+				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919, Migranten: 1114919},
+				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855, Migranten: 1915855},
+				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729, Migranten: 407729},
+				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667, Migranten: 374667},
+				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857, Migranten: 4511857},
+				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456, Migranten: 1827456},
+				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988},
+				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480}
 		]
 		pointStart = latlong2xyz(sphereRadius,48, 16); //immer gleich
 		
@@ -156,7 +156,7 @@
 		// only if the ray intersects with an object
 		if ( intersects.length > 0 ) {
 		//show message-box with name of intersected object
-			alert( intersects[ 0 ].object.name );
+			alert( intersects[ 0 ].object.name + ": " + intersects[ 0 ].object.anzahl);
 			//for all intersected objects, set color of line to red
 			//intersects[0].object.material.color.set( 0xff0000 );
 			intersects[0].object.material.opacity = 0.5;
@@ -215,7 +215,8 @@
 		  ab.subVectors(pointStart, pointEnd);
 		  cb.cross(ab);
 		  normal.copy(cb).normalize();
-
+		  
+		  
 
 		  var angle = pointStart.angleTo(pointEnd); // get the angle between vectors
 		  if (clockWise) angle = angle - Math.PI * 2;  // if clockWise is true, then we'll go the longest path
@@ -229,12 +230,13 @@
 		 
 		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
 		  
-		  lineWidth = lineWidth * 0.00000001;
+
+		  lineWidthScale = lineWidth * 0.00000001;
 		  var line = new MeshLine()
 		  line.setGeometry(geometry);
 		  var arcMaterial = new MeshLineMaterial({
 		    color: color,
-			lineWidth : lineWidth
+			lineWidth : lineWidthScale
 		  });
 		  
 		  const arc = new THREE.Mesh(line, arcMaterial);
