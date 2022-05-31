@@ -15,9 +15,27 @@
 			background-color: #000;
 			margin: 0px;
 			overflow: hidden;
+			font-family: sans-serif;
 		}
-		
-				</style>
+		.button {
+			background-color: rgb(27, 152, 85);
+			color: White;
+			
+			margin-top: 20px;
+			height: 40px;
+			width: 100%;
+			
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.button:hover{
+			background-color: rgb(44, 44, 135);
+		}
+		.button:active, #hurricanId:hover{
+			background-color: rgb(36, 36, 109);
+		}
+	</style>
 </head>
 <body>
 
@@ -260,6 +278,60 @@
 		document.body.appendChild( THREE.WEBGL.getWebGLErrorMessage() );
 	else
 		initialize();
+
+
+
+		// Highlight aktiver Button
+		function highlightactive1()
+            {
+                document.getElementById('button1').style.color='rgb(0, 67, 31)';
+				document.getElementById('button1').style.fontWeight='bold';
+				document.getElementById('button2').style='';
+				document.getElementById('button3').style='';
+				document.getElementById('description1').style.display = "block"; 
+				document.getElementById('description2').style.display = "none"; 
+				document.getElementById('description3').style.display = "none"; 
+            }
+			function highlightactive2()
+            {
+                document.getElementById('button2').style.color='rgb(0, 67, 31)';
+				document.getElementById('button2').style.fontWeight='bold';
+				document.getElementById('button1').style='';
+				document.getElementById('button3').style='';
+				document.getElementById('description2').style.display = "block"; 
+				document.getElementById('description1').style.display = "none"; 
+				document.getElementById('description3').style.display = "none"; 
+            }
+			function highlightactive3()
+            {
+                document.getElementById('button3').style.color='rgb(0, 67, 31)';
+				document.getElementById('button3').style.fontWeight='bold';
+				document.getElementById('button1').style='';
+				document.getElementById('button2').style='';
+				document.getElementById('description3').style.display = "block"; 
+				document.getElementById('description1').style.display = "none"; 
+				document.getElementById('description2').style.display = "none"; 
+            }
     </script>
+
+<!-- Buttos /HTML Interface -->
+<h1 style="position: absolute; left:42%; top: 6%; color: white;  padding-right: 30%; font-size: 230%; z-index: -1;"> Globale Migration</h1>
+<div style="position: absolute; left:10px; top: 10px; width: 220px;">
+	<div id="button1" onclick="highlightactive1(), changeTextureToPolitical()" class="button">
+		Migration nach Europa
+	</div>
+	<div id="button2" onclick="highlightactive2(),changeTextureToPhysical()" class="button">
+		Migration nach Österreich
+	</div>
+	<div id="button3" onclick="highlightactive3(),changeTextureToOcean()" class="button">
+		Migration nach Deutschland
+	</div>
+</div>
+
+<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen.</span>
+<span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
+<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
+
+
 </body>
 </html>
