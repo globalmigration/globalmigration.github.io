@@ -54,11 +54,12 @@
 		
 		textureLoader = new THREE.TextureLoader();		
         physical_texture = textureLoader.load('media/earth_surface_2048.jpg');
+		region_texture = textureLoader.load('media/regionmap.png');
 
                 mEarthMaterial = new THREE.MeshPhongMaterial(
 					{
-						map: physical_texture,
-						opacity: 0.5,
+						map: region_texture,
+						opacity: 0.8,
 						transparent:true
 						//normalMap: textureLoader.load("media/earth_normal_2048.png"),
 						//specular: 0x222222,
@@ -72,18 +73,32 @@
 
         scene.add( mEarth );
 		
-		var mAmbientLight = new THREE.AmbientLight( 0x333333 );
+		var mAmbientLight = new THREE.AmbientLight( 0x333333,5 );
 		scene.add( mAmbientLight );
 		
         mDirectionallight = new THREE.DirectionalLight( 0xBBBBBB );
 		mDirectionallight.position.y = 5;
 		mDirectionallight.position.z = 13;
-		scene.add( mDirectionallight );
+		//scene.add( mDirectionallight );
 		
 		//Linien der Migrationsströme zwischen den Regionen
 		var migration = [
-				{ name: "Europa - Nordafrika", longitude: 25, latitude: 14, anzahl: 1000},
-				{ name: "Europa - Nordamerika", longitude: 35, latitude: -100, anzahl: 5000},
+				{ name: "Australien und Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150},
+				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423},
+				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199},
+				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134},
+				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299},
+				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326},
+				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114},
+				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477},
+				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919},
+				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855},
+				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729},
+				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667},
+				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857},
+				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456},
+				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988},
+				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480}
 		]
 		pointStart = latlong2xyz(sphereRadius,48, 16); //immer gleich
 		
@@ -121,7 +136,7 @@
 		controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
 		
 		window.addEventListener( 'resize', onWindowResized, false );
-		raycaster.params.Line.threshold = 0.1;
+		raycaster.params.Line.threshold = 0.01;
 		document.addEventListener( 'mousedown', onDocumentMouseDown );
 		document.addEventListener( 'mousemove', onDocumentMouseMove );
 
@@ -212,14 +227,9 @@
 		    pts.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))
 		  }
 		 
-		   
-		  /*for (let j = 0; j < Math.PI; j += 2* Math.PI / 50) {
-			pts.push(new THREE.Vector3(Math.cos(j), Math.sin(j), 0));
-			}*/
-
 		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
 		  
-		  lineWidth = lineWidth * 0.00001;
+		  lineWidth = lineWidth * 0.00000001;
 		  var line = new MeshLine()
 		  line.setGeometry(geometry);
 		  var arcMaterial = new MeshLineMaterial({
@@ -231,10 +241,7 @@
 		  arc.name = name;
 		  arc.anzahl = lineWidth;
 		  arc.raycast = MeshLineRaycast;
-		  group.add( arc );
-		  
-		  //return arc;
-	
+		  group.add( arc );	
 		}
 
 	function animate() {
