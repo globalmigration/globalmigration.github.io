@@ -92,12 +92,14 @@
 	</style>
 </head>
 <body>
-
+	
     <script src="js/three.min.js"></script>
     <script src="js/WebGL.js"></script>
     <script src="js/TrackballControls.js"></script>
     <script src="js/stats.min.js"></script>
 	<script src="js/three.MeshLine.js"></script>
+    
+
 	
     <script>
 	
@@ -173,7 +175,7 @@
 				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#d3b9fc"},
 				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480, color:"#cef4fe"}
 		]
-		pointStart = latlong2xyz(sphereRadius,48, 16); //immer gleich
+		pointStart = latlong2xyz(sphereRadius,54, 16); //immer gleich
 		
 		/*color = "lime"
 		pointEnd = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
@@ -190,14 +192,15 @@
 		//group.add(newArc1);
 		scene.add(group);
         camera.position.z = 5;
-		
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
 		stats.domElement.style.top = '0px';
 		stats.domElement.style.left = '0px';
 		stats.domElement.style.zIndex = 100;
 		document.body.appendChild( stats.domElement );
-				
+		
+		
+		//Controls
 		controls = new THREE.TrackballControls( camera, renderer.domElement );
 		controls.rotateSpeed = 1.0;
 		controls.zoomSpeed = 1.2;
@@ -251,11 +254,6 @@
 		} 
 	}
 
-	function onDocumentMouseMove(){
-		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
-		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
-	}
-
 
 	function hoverLines(){
 		raycaster.setFromCamera( mousePos, camera );
@@ -285,6 +283,11 @@
 		camera.updateProjectionMatrix();		
 		controls.handleResize();
 	}
+	function onDocumentMouseMove(){
+		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
+		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
+	}
+
 	
 	function latlong2xyz( radius, latitude, longitude ) {
 		var x = radius * Math.cos( deg2rad( longitude )) * Math.cos( deg2rad( latitude ) );
@@ -330,7 +333,7 @@
 		  });
 		  
 		  const arc = new THREE.Mesh(line, arcMaterial);
-		  
+	
 		  arc.name = name;
 		  arc.anzahl = lineWidth;
 		  arc.raycast = MeshLineRaycast;
@@ -408,7 +411,6 @@
 <span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
 <span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
 <span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
-
-
+<iframe id = 'piechart' src="http://threegraphs.com/charts/preview/9046/embed/" width="500" height="500" scrolling="no"  style="position: relative;left:10px; top: 300px; border:none;"></iframe>
 </body>
 </html>
