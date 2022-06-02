@@ -35,6 +35,60 @@
 		.button:active, #hurricanId:hover{
 			background-color: rgb(36, 36, 109);
 		}
+
+		.popup {
+			position:absolute;
+			display: inline-block;
+			cursor: pointer;
+			left: 50%;
+			top: 50%;
+		}
+		
+		.popup .popuptext {
+			visibility: hidden;
+			width: 250px;
+			background-color: #555;
+			color: #fff;
+			text-align: center;
+			border-radius: 6px;
+			padding: 8px 0;
+			position: absolute;
+			z-index: 1;
+			bottom: 125%;
+			left: 50%;
+			margin-left: -80px;
+		}
+
+		/* Popup arrow */
+		.popup .popuptext::after {
+			content: "";
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			margin-left: -5px;
+			border-width: 5px;
+			border-style: solid;
+			border-color: #555 transparent transparent transparent;
+		}
+
+		/* Toggle this class when clicking on the popup container (hide and show the popup) */
+		.popup .show {
+			visibility: visible;
+			-webkit-animation: fadeIn 1s;
+			animation: fadeIn 1s
+		}
+
+		/* Add animation (fade in the popup) */
+			@-webkit-keyframes fadeIn {
+			from {opacity: 0;}
+			to {opacity: 1;}
+		}
+
+		@keyframes fadeIn {
+			from {opacity: 0;}
+			to {opacity:1 ;}
+		}
+
 	</style>
 </head>
 <body>
@@ -44,7 +98,6 @@
     <script src="js/TrackballControls.js"></script>
     <script src="js/stats.min.js"></script>
 	<script src="js/three.MeshLine.js"></script>
-	<script src="js/sweetalert.min.js"></script>
 	
     <script>
 	
@@ -89,7 +142,7 @@
 
 		
 		
-        mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius, 32, 32 ), mEarthMaterial );
+        mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius-0.001, 32, 32 ), mEarthMaterial );
 
         scene.add( mEarth );
 		
@@ -103,22 +156,22 @@
 		
 		//Linien der Migrationsströme zwischen den Regionen
 		var migration = [
-				{ name: "Australien und Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150, Migranten: 385150},
-				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423, Migranten: 897423},
-				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199, Migranten: 397199},
-				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134},
-				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299, Migranten: 1851299},
-				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326, Migranten: 1658326},
-				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114, Migranten: 902114},
-				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477},
-				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919, Migranten: 1114919},
-				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855, Migranten: 1915855},
-				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729, Migranten: 407729},
-				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667, Migranten: 374667},
-				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857, Migranten: 4511857},
-				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456, Migranten: 1827456},
-				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988},
-				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480}
+				{ name: "Australien und Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150, Migranten: 385150, color:"#edb2fe"},
+				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423, Migranten: 897423, color:"#b7e0fe"},
+				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199, Migranten: 397199, color:"#fdc1c0"},
+				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134, color:"#b4ffe1"},
+				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299, Migranten: 1851299, color:"#b7befe"},
+				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326, Migranten: 1658326, color:"#b5feb8"},
+				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114, Migranten: 902114, color:"#fcd1fd"},
+				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477, color:"#fee6d0"},
+				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919, Migranten: 1114919, color:"#b5fbfe"},
+				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855, Migranten: 1915855, color:"#d4d4fe"},
+				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729, Migranten: 407729, color:"#fdb2d4"},
+				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667, Migranten: 374667, color:"#d7fef2"},
+				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857, Migranten: 4511857, color:"#d0fdd1"},
+				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456, Migranten: 1827456, color:"#d7fdb5"},
+				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#d3b9fc"},
+				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480, color:"#cef4fe"}
 		]
 		pointStart = latlong2xyz(sphereRadius,48, 16); //immer gleich
 		
@@ -131,12 +184,11 @@
 		
 		for( var cur_region=0; cur_region < migration.length; cur_region++ ) {
 					setArc3D(pointStart,migration[cur_region].longitude, migration[cur_region].latitude,
-					 150,"lime",false,migration[cur_region].anzahl, migration[cur_region].name );
+					 200,migration[cur_region].color,false,migration[cur_region].anzahl, migration[cur_region].name );
 				}
 		//var group = new THREE.Group();
 		//group.add(newArc1);
 		scene.add(group);
-
         camera.position.z = 5;
 		
 		stats = new Stats();
@@ -170,19 +222,32 @@
 		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
 		
 		//console.log( "mousePos.x: " + mousePos.x + " mousePos.y: " + mousePos.y );
+		var popup = document.getElementById("myPopup");
+		const popupQuerySelector = "#popup";
+		const isClosest = event.target.closest(popupQuerySelector);
 		
+		// If `isClosest` equals falsy & popup has the class `show`
+		// then hide the popup
+		if (!isClosest && popup.classList.contains("show")) {
+			popup.classList.remove("show");
+		}
 		raycaster.setFromCamera( mousePos, camera );
 		var intersects = raycaster.intersectObjects( group.children );
+		
+		//popup.top = (mousePos.x);
+    	//popup.left = (mousePos.y);
 		// only if the ray intersects with an object
 		if ( intersects.length > 0 ) {
 		//show message-box with name of intersected object
-			alert( intersects[ 0 ].object.name + ": " + intersects[ 0 ].object.anzahl);
+			migrationsanzahl = intersects[ 0 ].object.anzahl.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+			
+			popup.innerText = 'Anzahl Migrant*innen ' + intersects[ 0 ].object.name + " 2020: " + migrationsanzahl
+			popup.classList.toggle("show");
+			
+			//alert( intersects[ 0 ].object.name + ": " + intersects[ 0 ].object.anzahl);
 			//for all intersected objects, set color of line to red
 			//intersects[0].object.material.color.set( 0xff0000 );
-			intersects[0].object.material.opacity = 0.5;
-			setTimeout(function () {
-				intersects[0].object.material.opacity =  1.0;
-			})
+			
 		} 
 	}
 
@@ -196,16 +261,23 @@
 		raycaster.setFromCamera( mousePos, camera );
 		var intersects = raycaster.intersectObjects( group.children );
 		for ( var i = 0; i < intersects.length; i++ ) {
-				intersects[ i ].object.material.transparent = true;
-				intersects[ i ].object.material.opacity = 0.5;
+			if (intersects[0].object.material.color.getHex() !=  0xff0000){	
+				var trueColor = new THREE.Color(intersects[0].object.material.color)
+			}			
+				//var truecolor = new THREE.Color(intersects[0].object.material.color)
+				//intersects[ i ].object.material.transparent = true;
+				//intersects[ i ].object.material.opacity = 0.5;
 				intersects[0].object.material.color.set( 0xff0000 );
 				setTimeout(function () {
-				intersects[0].object.material.opacity =  1.0;
-				intersects[0].object.material.color.set( 'Lime' );
-				
-			})
-			}
-	}
+				//intersects[0].object.material.opacity =  1.0;
+				if (trueColor){
+					intersects[0].object.material.color.set(trueColor.getHex());
+				}
+				}
+				);
+			};
+		}
+	
 
 	function onWindowResized() {
 		renderer.setSize( window.innerWidth, window.innerHeight );
@@ -216,7 +288,7 @@
 	
 	function latlong2xyz( radius, latitude, longitude ) {
 		var x = radius * Math.cos( deg2rad( longitude )) * Math.cos( deg2rad( latitude ) );
-		var z = radius * Math.sin( deg2rad( longitude ) ) * Math.cos( deg2rad( latitude ) );
+		var z = radius * Math.sin( deg2rad( longitude ) ) * Math.cos( deg2rad( latitude ));
 		var y = radius * Math.sin( deg2rad( latitude ) );
 		var vector = new THREE.Vector3( x, y, -z );
 		return vector;
@@ -235,8 +307,6 @@
 		  ab.subVectors(pointStart, pointEnd);
 		  cb.cross(ab);
 		  normal.copy(cb).normalize();
-		  
-		  
 
 		  var angle = pointStart.angleTo(pointEnd); // get the angle between vectors
 		  if (clockWise) angle = angle - Math.PI * 2;  // if clockWise is true, then we'll go the longest path
@@ -244,10 +314,10 @@
 		
 		//var geometry = new THREE.Geometry();
 		var pts = [];
+		var z = 0.0001
 		 for (var i = 0; i < smoothness; i++) {
 		    pts.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))
 		  }
-		 
 		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
 		  
 
@@ -256,10 +326,11 @@
 		  line.setGeometry(geometry);
 		  var arcMaterial = new MeshLineMaterial({
 		    color: color,
-			lineWidth : lineWidthScale
+			lineWidth : lineWidthScale,
 		  });
 		  
 		  const arc = new THREE.Mesh(line, arcMaterial);
+		  
 		  arc.name = name;
 		  arc.anzahl = lineWidth;
 		  arc.raycast = MeshLineRaycast;
@@ -326,10 +397,16 @@
 	<div id="button3" onclick="highlightactive3(),changeTextureToOcean()" class="button">
 		Migration nach Deutschland
 	</div>
+
+</div>
+<div class="popup">
+	<span class="popuptext" id="myPopup"></span>
+  </div>
 </div>
 
 <span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen.</span>
 <span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
+<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
 <span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
 
 
