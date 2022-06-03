@@ -144,7 +144,7 @@
 
 		
 		
-        mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius-0.001, 32, 32 ), mEarthMaterial );
+        mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius-0.01, 32, 32 ), mEarthMaterial );
 
         scene.add( mEarth );
 		
@@ -317,7 +317,6 @@
 		
 		//var geometry = new THREE.Geometry();
 		var pts = [];
-		var z = 0.0001
 		 for (var i = 0; i < smoothness; i++) {
 		    pts.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))
 		  }
@@ -329,15 +328,35 @@
 		  line.setGeometry(geometry);
 		  var arcMaterial = new MeshLineMaterial({
 		    color: color,
+			sizeAttenuation : true,
 			lineWidth : lineWidthScale,
+			alphaTest  : 0.1,
+		  });
+
+		  var arcMaterialWireframe = new MeshLineMaterial({
+		    color: "#000",
+			sizeAttenuation : true,
+			lineWidth : lineWidthScale,
+			alphaTest  : 0.1,
+			//wireframe: true,
+			transparent: true,
+			opacity: 0.1,
+			//side: THREE.BackSide
+
 		  });
 		  
+		  //Arc
 		  const arc = new THREE.Mesh(line, arcMaterial);
-	
+		  const arcWireframe = new THREE.Mesh(line, arcMaterialWireframe);
 		  arc.name = name;
 		  arc.anzahl = lineWidth;
 		  arc.raycast = MeshLineRaycast;
+
 		  group.add( arc );	
+		  group.add( arcWireframe );	
+		  
+
+		  
 		}
 
 	function animate() {
