@@ -96,6 +96,7 @@
 
 <!------------- BODY ----------------->
 <body>
+<<<<<<< HEAD
 
     
 
@@ -136,6 +137,16 @@
 <script src="js/stats.min.js"></script>
 <script src="js/three.MeshLine.js"></script>
 <script src="js/chart.min.js"></script>
+=======
+	
+    <script src="js/three.min.js"></script>
+    <script src="js/WebGL.js"></script>
+    <script src="js/TrackballControls.js"></script>
+    <script src="js/stats.min.js"></script>
+	<script src="js/three.MeshLine.js"></script>
+    
+
+>>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 	
 <script>
 	
@@ -180,7 +191,7 @@
 
 		
 		
-        mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius-0.001, 32, 32 ), mEarthMaterial );
+        mEarth = new THREE.Mesh( new THREE.SphereGeometry( sphereRadius-0.01, 32, 32 ), mEarthMaterial );
 
         scene.add( mEarth );
 		
@@ -213,7 +224,11 @@
 				
 	
 		]
+<<<<<<< HEAD
 		pointStart = latlong2xyz(sphereRadius,50, 16); //immer gleich
+=======
+		pointStart = latlong2xyz(sphereRadius,54, 16); //immer gleich
+>>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 		
 		/*color = "lime"
 		pointEnd = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
@@ -232,16 +247,21 @@
 		//group.add(newArc1);
 		scene.add(group);
         camera.position.z = 5;
-		
 		stats = new Stats();
 		stats.domElement.style.position = 'absolute';
 		stats.domElement.style.top = '0px';
 		stats.domElement.style.left = '0px';
 		stats.domElement.style.zIndex = 100;
 		document.body.appendChild( stats.domElement );
+<<<<<<< HEAD
 
 		plotPieChart(migration);
 				
+=======
+		
+		
+		//Controls
+>>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 		controls = new THREE.TrackballControls( camera, renderer.domElement );
 		controls.rotateSpeed = 1.0;
 		controls.zoomSpeed = 1.2;
@@ -295,11 +315,6 @@
 		} 
 	}
 
-	function onDocumentMouseMove(){
-		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
-		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
-	}
-
 
 	function hoverLines(){
 		raycaster.setFromCamera( mousePos, camera );
@@ -329,6 +344,11 @@
 		camera.updateProjectionMatrix();		
 		controls.handleResize();
 	}
+	function onDocumentMouseMove(){
+		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
+		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
+	}
+
 	
 	function latlong2xyz( radius, latitude, longitude ) {
 		var x = radius * Math.cos( deg2rad( longitude )) * Math.cos( deg2rad( latitude ) );
@@ -358,7 +378,6 @@
 		
 		//var geometry = new THREE.Geometry();
 		var pts = [];
-		var z = 0.0001
 		 for (var i = 0; i < smoothness; i++) {
 		    pts.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))
 		  }
@@ -370,15 +389,35 @@
 		  line.setGeometry(geometry);
 		  var arcMaterial = new MeshLineMaterial({
 		    color: color,
+			sizeAttenuation : true,
 			lineWidth : lineWidthScale,
+			alphaTest  : 0.1,
+		  });
+
+		  var arcMaterialWireframe = new MeshLineMaterial({
+		    color: "#000",
+			sizeAttenuation : true,
+			lineWidth : lineWidthScale,
+			alphaTest  : 0.1,
+			//wireframe: true,
+			transparent: true,
+			opacity: 0.1,
+			//side: THREE.BackSide
+
 		  });
 		  
+		  //Arc
 		  const arc = new THREE.Mesh(line, arcMaterial);
-		  
+		  const arcWireframe = new THREE.Mesh(line, arcMaterialWireframe);
 		  arc.name = name;
 		  arc.anzahl = lineWidth;
 		  arc.raycast = MeshLineRaycast;
+
 		  group.add( arc );	
+		  group.add( arcWireframe );	
+		  
+
+		  
 		}
 
 	function animate() {
@@ -437,6 +476,7 @@
 			var color = migration.map((m) => m.color)
 
 
+<<<<<<< HEAD
 
 			new Chart("myChart", {
 			type: "doughnut",
@@ -462,5 +502,12 @@
 		}
 </script>
 
+=======
+<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen.</span>
+<span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
+<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
+<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
+<iframe id = 'piechart' src="http://threegraphs.com/charts/preview/9046/embed/" width="500" height="500" scrolling="no"  style="position: relative;left:10px; top: 300px; border:none;"></iframe>
+>>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 </body>
 </html>
