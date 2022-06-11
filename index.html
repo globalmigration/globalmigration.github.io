@@ -6,6 +6,8 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
     <title>Globale Migration</title>
+
+	<!------------- STYLE --------------->
 	<style>
 		canvas	{
 			width: 100%;
@@ -91,21 +93,57 @@
 
 	</style>
 </head>
+
+<!------------- BODY ----------------->
 <body>
 
-    <script src="js/three.min.js"></script>
-    <script src="js/WebGL.js"></script>
-    <script src="js/TrackballControls.js"></script>
-    <script src="js/stats.min.js"></script>
-	<script src="js/three.MeshLine.js"></script>
+    
+
+<!-- Buttos /HTML Interface -->
+<h1 style="position: absolute; left:42%; top: 6%; color: white;  padding-right: 30%; font-size: 230%; z-index: -1;"> Globale Migration</h1>
+
+<div style="position: absolute; left:10px; top: 10px; width: 220px;">
+	<div id="button1" onclick="highlightactive1(), changeTextureToPolitical()" class="button">
+		Migration nach Europa
+	</div>
+	<div id="button2" onclick="highlightactive2(),changeTextureToPhysical()" class="button">
+		Migration nach Österreich
+	</div>
+	<div id="button3" onclick="highlightactive3(),changeTextureToOcean()" class="button">
+		Migration nach Deutschland
+	</div>
+</div>
+
+<div class="popup">
+	<span class="popuptext" id="myPopup"></span>
+  </div>
+</div>
+
+<div  style="position: absolute; right: 2%; top: 0; height: 100%; width: 250px; color: white; z-index: -1">
+	<canvas id="myChart"></div>
+</div>
+
+<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen.</span>
+<span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
+<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
+<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
+
+
+<!--------- SCRIPT  ---------------->
+<script src="js/three.min.js"></script>
+<script src="js/WebGL.js"></script>
+<script src="js/TrackballControls.js"></script>
+<script src="js/stats.min.js"></script>
+<script src="js/three.MeshLine.js"></script>
+<script src="js/chart.min.js"></script>
 	
-    <script>
+<script>
 	
     var scene, renderer, camera;
 	var mEarth, mGDP;	
 	var controls;
 	var stats;
-	var mEarthMaterial, physical_texture;
+	var mEarthMaterial, physical_ftexture;
 	var textureLoader;
 	var mDirectionallight;
 	var raycaster = new THREE.Raycaster();
@@ -156,24 +194,26 @@
 		
 		//Linien der Migrationsströme zwischen den Regionen
 		var migration = [
-				{ name: "Australien und Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150, Migranten: 385150, color:"#edb2fe"},
-				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423, Migranten: 897423, color:"#b7e0fe"},
-				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199, Migranten: 397199, color:"#fdc1c0"},
-				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134, color:"#b4ffe1"},
-				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299, Migranten: 1851299, color:"#b7befe"},
-				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326, Migranten: 1658326, color:"#b5feb8"},
-				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114, Migranten: 902114, color:"#fcd1fd"},
-				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477, color:"#fee6d0"},
-				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919, Migranten: 1114919, color:"#b5fbfe"},
-				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855, Migranten: 1915855, color:"#d4d4fe"},
-				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729, Migranten: 407729, color:"#fdb2d4"},
-				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667, Migranten: 374667, color:"#d7fef2"},
-				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857, Migranten: 4511857, color:"#d0fdd1"},
-				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456, Migranten: 1827456, color:"#d7fdb5"},
-				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#d3b9fc"},
-				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480, color:"#cef4fe"}
+				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480, color:"#b8eefc"},
+				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667, Migranten: 374667, color:"#b3fce6"},
+				{ name: "Australien u. Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150, Migranten: 385150, color:"#e8a1fc"},
+				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199, Migranten: 397199, color:"#fcb1b0"},
+				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729, Migranten: 407729, color:"#fc9fc9"},
+				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423, Migranten: 897423, color:"#a4d7fc"},
+				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114, Migranten: 902114, color:"#fbbafc"},
+				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919, Migranten: 1114919, color:"#99f9fc"},
+				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326, Migranten: 1658326, color:"#a1fca4"},
+				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456, Migranten: 1827456, color:"#cafc9f"},
+				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299, Migranten: 1851299, color:"#a4acfc"},
+				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855, Migranten: 1915855, color:"#a9a9fc"},
+				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857, Migranten: 4511857, color:"#a4fca5"},
+				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477, color:"#fcd0a6"},
+				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#b98ffc"},
+				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134, color:"#94fcd3"},
+				
+	
 		]
-		pointStart = latlong2xyz(sphereRadius,48, 16); //immer gleich
+		pointStart = latlong2xyz(sphereRadius,50, 16); //immer gleich
 		
 		/*color = "lime"
 		pointEnd = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
@@ -186,6 +226,8 @@
 					setArc3D(pointStart,migration[cur_region].longitude, migration[cur_region].latitude,
 					 200,migration[cur_region].color,false,migration[cur_region].anzahl, migration[cur_region].name );
 				}
+
+			
 		//var group = new THREE.Group();
 		//group.add(newArc1);
 		scene.add(group);
@@ -197,6 +239,8 @@
 		stats.domElement.style.left = '0px';
 		stats.domElement.style.zIndex = 100;
 		document.body.appendChild( stats.domElement );
+
+		plotPieChart(migration);
 				
 		controls = new THREE.TrackballControls( camera, renderer.domElement );
 		controls.rotateSpeed = 1.0;
@@ -350,65 +394,73 @@
 	else
 		initialize();
 
-
-
 		// Highlight aktiver Button
 		function highlightactive1()
-            {
-                document.getElementById('button1').style.color='rgb(0, 67, 31)';
-				document.getElementById('button1').style.fontWeight='bold';
-				document.getElementById('button2').style='';
-				document.getElementById('button3').style='';
-				document.getElementById('description1').style.display = "block"; 
-				document.getElementById('description2').style.display = "none"; 
-				document.getElementById('description3').style.display = "none"; 
-            }
-			function highlightactive2()
-            {
-                document.getElementById('button2').style.color='rgb(0, 67, 31)';
-				document.getElementById('button2').style.fontWeight='bold';
-				document.getElementById('button1').style='';
-				document.getElementById('button3').style='';
-				document.getElementById('description2').style.display = "block"; 
-				document.getElementById('description1').style.display = "none"; 
-				document.getElementById('description3').style.display = "none"; 
-            }
-			function highlightactive3()
-            {
-                document.getElementById('button3').style.color='rgb(0, 67, 31)';
-				document.getElementById('button3').style.fontWeight='bold';
-				document.getElementById('button1').style='';
-				document.getElementById('button2').style='';
-				document.getElementById('description3').style.display = "block"; 
-				document.getElementById('description1').style.display = "none"; 
-				document.getElementById('description2').style.display = "none"; 
-            }
-    </script>
+		{
+			document.getElementById('button1').style.color='rgb(0, 67, 31)';
+			document.getElementById('button1').style.fontWeight='bold';
+			document.getElementById('button2').style='';
+			document.getElementById('button3').style='';
+			document.getElementById('description1').style.display = "block"; 
+			document.getElementById('description2').style.display = "none"; 
+			document.getElementById('description3').style.display = "none"; 
+			document.getElementById('myChart').style.display = "block"; 
+		}
+		function highlightactive2()
+		{
+			document.getElementById('button2').style.color='rgb(0, 67, 31)';
+			document.getElementById('button2').style.fontWeight='bold';
+			document.getElementById('button1').style='';
+			document.getElementById('button3').style='';
+			document.getElementById('description2').style.display = "block"; 
+			document.getElementById('description1').style.display = "none"; 
+			document.getElementById('description3').style.display = "none";
+			document.getElementById('myChart').style.display = "none"; 
+		}
+		function highlightactive3()
+		{
+			document.getElementById('button3').style.color='rgb(0, 67, 31)';
+			document.getElementById('button3').style.fontWeight='bold';
+			document.getElementById('button1').style='';
+			document.getElementById('button2').style='';
+			document.getElementById('description3').style.display = "block"; 
+			document.getElementById('description1').style.display = "none"; 
+			document.getElementById('description2').style.display = "none"; 
+			document.getElementById('myChart').style.display = "none"; 
+		}
+   
+		// Pie-Chart
 
-<!-- Buttos /HTML Interface -->
-<h1 style="position: absolute; left:42%; top: 6%; color: white;  padding-right: 30%; font-size: 230%; z-index: -1;"> Globale Migration</h1>
-<div style="position: absolute; left:10px; top: 10px; width: 220px;">
-	<div id="button1" onclick="highlightactive1(), changeTextureToPolitical()" class="button">
-		Migration nach Europa
-	</div>
-	<div id="button2" onclick="highlightactive2(),changeTextureToPhysical()" class="button">
-		Migration nach Österreich
-	</div>
-	<div id="button3" onclick="highlightactive3(),changeTextureToOcean()" class="button">
-		Migration nach Deutschland
-	</div>
+		function plotPieChart(migration) {
+			var countries = migration.map((m) => m.name);
+			var migrationCounts = migration.map((m) => m.anzahl);
+			var color = migration.map((m) => m.color)
 
-</div>
-<div class="popup">
-	<span class="popuptext" id="myPopup"></span>
-  </div>
-</div>
 
-<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen.</span>
-<span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
-<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
-<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
 
+			new Chart("myChart", {
+			type: "doughnut",
+			data: {
+				labels: countries,
+				datasets: [{
+				backgroundColor: color,
+				data: migrationCounts
+				}]
+			},
+			options: {
+				events: ['click'],
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						position: "bottom",
+						align: "start",
+					}
+				}
+			}
+			});
+		}
+</script>
 
 </body>
 </html>
