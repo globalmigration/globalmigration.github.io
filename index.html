@@ -96,10 +96,8 @@
 
 <!------------- BODY ----------------->
 <body>
-<<<<<<< HEAD
 
     
-
 <!-- Buttos /HTML Interface -->
 <h1 style="position: absolute; left:42%; top: 6%; color: white;  padding-right: 30%; font-size: 230%; z-index: -1;"> Globale Migration</h1>
 
@@ -124,10 +122,11 @@
 	<canvas id="myChart"></div>
 </div>
 
-<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen.</span>
+<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen. </span>
 <span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
 <span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
 <span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
+<div style="font-size:60%;color: rgb(149, 148, 148);position: absolute; bottom: 10px;">Datenquelle: Our World in Data/United Nations Department of Economic and Social Affairs</small></div>
 
 
 <!--------- SCRIPT  ---------------->
@@ -137,16 +136,6 @@
 <script src="js/stats.min.js"></script>
 <script src="js/three.MeshLine.js"></script>
 <script src="js/chart.min.js"></script>
-=======
-	
-    <script src="js/three.min.js"></script>
-    <script src="js/WebGL.js"></script>
-    <script src="js/TrackballControls.js"></script>
-    <script src="js/stats.min.js"></script>
-	<script src="js/three.MeshLine.js"></script>
-    
-
->>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 	
 <script>
 	
@@ -205,22 +194,22 @@
 		
 		//Linien der Migrationsströme zwischen den Regionen
 		var migration = [
-				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480, color:"#b8eefc"},
-				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667, Migranten: 374667, color:"#b3fce6"},
-				{ name: "Australien u. Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150, Migranten: 385150, color:"#e8a1fc"},
-				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199, Migranten: 397199, color:"#fcb1b0"},
-				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729, Migranten: 407729, color:"#fc9fc9"},
-				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423, Migranten: 897423, color:"#a4d7fc"},
-				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114, Migranten: 902114, color:"#fbbafc"},
-				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919, Migranten: 1114919, color:"#99f9fc"},
-				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326, Migranten: 1658326, color:"#a1fca4"},
-				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456, Migranten: 1827456, color:"#cafc9f"},
-				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299, Migranten: 1851299, color:"#a4acfc"},
-				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855, Migranten: 1915855, color:"#a9a9fc"},
-				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857, Migranten: 4511857, color:"#a4fca5"},
-				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477, color:"#fcd0a6"},
-				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#b98ffc"},
-				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134, color:"#94fcd3"},
+				{ name: "Ozeanien - Europa", longitude: -4, latitude: 150, anzahl: 13480, Migranten: 13480, color:"#375F1B"},
+				{ name: "Afrika Süden - Europa", longitude: -23, latitude: 23, anzahl: 374667, Migranten: 374667, color:"#448D76"},
+				{ name: "Australien u. Neuseeland - Europa", longitude: -25, latitude: 150, anzahl: 385150, Migranten: 385150, color:"#133863"},
+				{ name: "Mittelamerika - Europa", longitude: 25, latitude: -90, anzahl: 397199, Migranten: 397199, color:"#0247FE"},
+				{ name: "Südamerika - Europa", longitude: -10, latitude: -60, anzahl: 407729, Migranten: 407729, color:"#151599"},
+				{ name: "Karibik - Europa", longitude: 25, latitude: -75, anzahl: 897423, Migranten: 897423, color:"#5A18C9"},
+				{ name: "Zentralafrika - Europa", longitude: 2, latitude: 20, anzahl: 902114, Migranten: 902114, color:"#3A004C"},
+				{ name: "Nordamerika - Europa", longitude: 40, latitude: -100, anzahl: 1114919, Migranten: 1114919, color:"#AE0D7A"},
+				{ name: "Ostasien - Europa", longitude: 45, latitude: 100, anzahl: 1658326, Migranten: 1658326, color:"#7B0F28"},
+				{ name: "Westafrika - Europa", longitude: 15, latitude: 0, anzahl: 1827456, Migranten: 1827456, color:"#FE2712"},
+				{ name: "Ostafrika - Europa", longitude: 2, latitude: 37, anzahl: 1851299, Migranten: 1851299, color:"#A22C02"},
+				{ name: "Südostasien - Europa", longitude: 10, latitude: 110, anzahl: 1915855, Migranten: 1915855, color:"#FC7307"},
+				{ name: "Südasien - Europa", longitude: 30, latitude: 77, anzahl: 4511857, Migranten: 4511857, color:"#975B02"},
+				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477, color:"#FCBA12"},
+				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#B69B02"},
+				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134, color:"#FEFE33"},
 				
 	
 		]
