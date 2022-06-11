@@ -224,11 +224,7 @@
 				
 	
 		]
-<<<<<<< HEAD
 		pointStart = latlong2xyz(sphereRadius,50, 16); //immer gleich
-=======
-		pointStart = latlong2xyz(sphereRadius,54, 16); //immer gleich
->>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 		
 		/*color = "lime"
 		pointEnd = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
@@ -253,15 +249,9 @@
 		stats.domElement.style.left = '0px';
 		stats.domElement.style.zIndex = 100;
 		document.body.appendChild( stats.domElement );
-<<<<<<< HEAD
 
 		plotPieChart(migration);
 				
-=======
-		
-		
-		//Controls
->>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 		controls = new THREE.TrackballControls( camera, renderer.domElement );
 		controls.rotateSpeed = 1.0;
 		controls.zoomSpeed = 1.2;
@@ -476,7 +466,6 @@
 			var color = migration.map((m) => m.color)
 
 
-<<<<<<< HEAD
 
 			new Chart("myChart", {
 			type: "doughnut",
@@ -502,12 +491,5 @@
 		}
 </script>
 
-=======
-<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen.</span>
-<span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
-<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
-<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
-<iframe id = 'piechart' src="http://threegraphs.com/charts/preview/9046/embed/" width="500" height="500" scrolling="no"  style="position: relative;left:10px; top: 300px; border:none;"></iframe>
->>>>>>> 52388cf4dbcbd29b7651ec4e29a2d175f0557f5e
 </body>
 </html>
