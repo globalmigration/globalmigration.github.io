@@ -32,7 +32,7 @@
 			align-items: center;
 		}
 		.button:hover{
-			background-color: rgb(44, 44, 135);
+			background-color: rgb(39, 202, 115);
 		}
 		.button:active, #hurricanId:hover{
 			background-color: rgb(36, 36, 109);
@@ -118,14 +118,13 @@
   </div>
 </div>
 
-<div  style="position: absolute; right: 2%; top: 0; height: 100%; width: 250px; color: white; z-index: -1">
+<div  style="position: absolute; right: 2%; top: 0; height: 100%; width: 250px; z-index: 0">
 	<canvas id="myChart"></div>
 </div>
 
-<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa nach Regionen. </span>
+<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa aufgeschlüsselt nach Regionen. </span>
 <span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
-<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
-<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span> 
+<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Deutschland und die wichtigsten Herkunftsländer. </span> 
 <div style="font-size:60%;color: rgb(149, 148, 148);position: absolute; bottom: 10px;">Datenquelle: Our World in Data/United Nations Department of Economic and Social Affairs</small></div>
 
 
@@ -135,7 +134,7 @@
 <script src="js/TrackballControls.js"></script>
 <script src="js/stats.min.js"></script>
 <script src="js/three.MeshLine.js"></script>
-<script src="js/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	
 <script>
 	
@@ -151,6 +150,7 @@
 	var group = new THREE.Group();
 	var pointStart, pointEnd, newArc1, color;
 	var sphereRadius = 1;	
+
     function initialize() {
 		renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
 		//renderer.setClearColor( "#0339fc", 0 ); // the default
@@ -170,8 +170,6 @@
 						map: region_texture,
 						opacity: 1,
 						transparent:true,
-						//displacementMap: textureLoader.load( "media/oceanmap.png" ),
-						//displacementScale: -0.2,
 						specular: 0x3737aa,
 						shininess: 45,
 						specularMap: textureLoader.load("media/specularmap.png")
@@ -251,7 +249,7 @@
 		controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
 		
 		window.addEventListener( 'resize', onWindowResized, false );
-		raycaster.params.Line.threshold = 0.01;
+		raycaster.params.Line.threshold = 0.1;
 		document.addEventListener( 'mousedown', onDocumentMouseDown );
 		document.addEventListener( 'mousemove', onDocumentMouseMove );
 
@@ -298,19 +296,18 @@
 	function hoverLines(){
 		raycaster.setFromCamera( mousePos, camera );
 		var intersects = raycaster.intersectObjects( group.children );
+
 		for ( var i = 0; i < intersects.length; i++ ) {
-			if (intersects[0].object.material.color.getHex() !=  0xff0000){	
-				var trueColor = new THREE.Color(intersects[0].object.material.color)
+			
+			if (intersects[0].object.material.color.getHex() !=  0x55FF00){	
+			var trueColor = new THREE.Color(intersects[0].object.material.color)
 			}			
-				//var truecolor = new THREE.Color(intersects[0].object.material.color)
-				//intersects[ i ].object.material.transparent = true;
-				//intersects[ i ].object.material.opacity = 0.5;
-				intersects[0].object.material.color.set( 0xff0000 );
+				intersects[0].object.material.color.set( 0x55FF00 );
+				
 				setTimeout(function () {
-				//intersects[0].object.material.opacity =  1.0;
-				if (trueColor){
+					if (trueColor){
 					intersects[0].object.material.color.set(trueColor.getHex());
-				}
+					}
 				}
 				);
 			};
@@ -412,10 +409,10 @@
 	else
 		initialize();
 
-		// Highlight aktiver Button
+		// Highlight Button
 		function highlightactive1()
 		{
-			document.getElementById('button1').style.color='rgb(0, 67, 31)';
+			document.getElementById('button1').style.color='rgb(6, 45, 24)';
 			document.getElementById('button1').style.fontWeight='bold';
 			document.getElementById('button2').style='';
 			document.getElementById('button3').style='';
@@ -426,7 +423,7 @@
 		}
 		function highlightactive2()
 		{
-			document.getElementById('button2').style.color='rgb(0, 67, 31)';
+			document.getElementById('button2').style.color='rgb(6, 45, 24)';
 			document.getElementById('button2').style.fontWeight='bold';
 			document.getElementById('button1').style='';
 			document.getElementById('button3').style='';
@@ -437,7 +434,7 @@
 		}
 		function highlightactive3()
 		{
-			document.getElementById('button3').style.color='rgb(0, 67, 31)';
+			document.getElementById('button3').style.color='rgb(6, 45, 24)';
 			document.getElementById('button3').style.fontWeight='bold';
 			document.getElementById('button1').style='';
 			document.getElementById('button2').style='';
@@ -447,37 +444,40 @@
 			document.getElementById('myChart').style.display = "none"; 
 		}
    
-		// Pie-Chart
+	// Pie-Chart
 
-		function plotPieChart(migration) {
-			var countries = migration.map((m) => m.name);
-			var migrationCounts = migration.map((m) => m.anzahl);
-			var color = migration.map((m) => m.color)
+	function plotPieChart(migration) {
+		var countries = migration.map((m) => m.name);
+		var migrationCounts = migration.map((m) => m.anzahl);
+		var color = migration.map((m) => m.color)
 
 
-
-			new Chart("myChart", {
-			type: "doughnut",
-			data: {
-				labels: countries,
-				datasets: [{
-				backgroundColor: color,
-				data: migrationCounts
-				}]
+		new Chart("myChart", {
+		type: "doughnut",
+		data: {
+			labels: countries,
+			datasets: [{
+			backgroundColor: color,
+			data: migrationCounts
+			}]
 			},
 			options: {
-				events: ['click'],
+				events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
 				responsive: true,
 				maintainAspectRatio: false,
 				plugins: {
 					legend: {
 						position: "bottom",
 						align: "start",
+						labels: {
+							color: "rgb(242, 242, 242)",
+						}
 					}
 				}
 			}
 			});
 		}
+
 </script>
 
 </body>
