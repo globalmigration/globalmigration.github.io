@@ -153,7 +153,6 @@
 
     function initialize() {
 		renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
-		//renderer.setClearColor( "#0339fc", 0 ); // the default
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.setPixelRatio( window.devicePixelRatio );
 		document.body.appendChild( renderer.domElement );
@@ -237,7 +236,6 @@
 		stats.domElement.style.zIndex = 100;
 		document.body.appendChild( stats.domElement );
 
-		plotPieChart(migration);
 				
 		controls = new THREE.TrackballControls( camera, renderer.domElement );
 		controls.rotateSpeed = 1.0;
@@ -392,7 +390,6 @@
 		  group.add( arc );	
 		  group.add( arcWireframe );	
 		  
-
 		  
 		}
 
@@ -409,40 +406,41 @@
 	else
 		initialize();
 
-		// Highlight Button
-		function highlightactive1()
-		{
-			document.getElementById('button1').style.color='rgb(6, 45, 24)';
-			document.getElementById('button1').style.fontWeight='bold';
-			document.getElementById('button2').style='';
-			document.getElementById('button3').style='';
-			document.getElementById('description1').style.display = "block"; 
-			document.getElementById('description2').style.display = "none"; 
-			document.getElementById('description3').style.display = "none"; 
-			document.getElementById('myChart').style.display = "block"; 
-		}
-		function highlightactive2()
-		{
-			document.getElementById('button2').style.color='rgb(6, 45, 24)';
-			document.getElementById('button2').style.fontWeight='bold';
-			document.getElementById('button1').style='';
-			document.getElementById('button3').style='';
-			document.getElementById('description2').style.display = "block"; 
-			document.getElementById('description1').style.display = "none"; 
-			document.getElementById('description3').style.display = "none";
-			document.getElementById('myChart').style.display = "none"; 
-		}
-		function highlightactive3()
-		{
-			document.getElementById('button3').style.color='rgb(6, 45, 24)';
-			document.getElementById('button3').style.fontWeight='bold';
-			document.getElementById('button1').style='';
-			document.getElementById('button2').style='';
-			document.getElementById('description3').style.display = "block"; 
-			document.getElementById('description1').style.display = "none"; 
-			document.getElementById('description2').style.display = "none"; 
-			document.getElementById('myChart').style.display = "none"; 
-		}
+
+// Highlight Button
+	function highlightactive1()
+	{
+		document.getElementById('button1').style.color='rgb(6, 45, 24)';
+		document.getElementById('button1').style.fontWeight='bold';
+		document.getElementById('button2').style='';
+		document.getElementById('button3').style='';
+		document.getElementById('description1').style.display = "block"; 
+		document.getElementById('description2').style.display = "none"; 
+		document.getElementById('description3').style.display = "none"; 
+		document.getElementById('myChart').style.display = "block"; 
+	}
+	function highlightactive2()
+	{
+		document.getElementById('button2').style.color='rgb(6, 45, 24)';
+		document.getElementById('button2').style.fontWeight='bold';
+		document.getElementById('button1').style='';
+		document.getElementById('button3').style='';
+		document.getElementById('description2').style.display = "block"; 
+		document.getElementById('description1').style.display = "none"; 
+		document.getElementById('description3').style.display = "none";
+		document.getElementById('myChart').style.display = "none"; 
+	}
+	function highlightactive3()
+	{
+		document.getElementById('button3').style.color='rgb(6, 45, 24)';
+		document.getElementById('button3').style.fontWeight='bold';
+		document.getElementById('button1').style='';
+		document.getElementById('button2').style='';
+		document.getElementById('description3').style.display = "block"; 
+		document.getElementById('description1').style.display = "none"; 
+		document.getElementById('description2').style.display = "none"; 
+		document.getElementById('myChart').style.display = "none"; 
+	}
    
 	// Pie-Chart
 
