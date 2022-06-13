@@ -207,17 +207,9 @@
 				{ name: "Nordafrika - Europa", longitude: 30, latitude: 14, anzahl: 5896477, Migranten: 5896477, color:"#FCBA12"},
 				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#B69B02"},
 				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134, color:"#FEFE33"},
-				
-	
 		]
 		pointStart = latlong2xyz(sphereRadius,50, 16); //immer gleich
 		
-		/*color = "lime"
-		pointEnd = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
-		newArc1 = setArc3D(pointStart, pointEnd, 150, "lime", false,migration[0].anzahl,migration[0].name);
-		
-		pointEnd2 = latlong2xyz(sphereRadius,migration[0].longitude, migration[0].latitude);
-		newArc2 = setArc3D(pointStart, pointEnd, 150, "lime", false,migration[0].anzahl,migration[0].name);*/
 		
 		for( var cur_region=0; cur_region < migration.length; cur_region++ ) {
 					setArc3D(pointStart,migration[cur_region].longitude, migration[cur_region].latitude,
@@ -225,8 +217,6 @@
 				}
 
 			
-		//var group = new THREE.Group();
-		//group.add(newArc1);
 		scene.add(group);
         camera.position.z = 5;
 		stats = new Stats();
@@ -257,11 +247,9 @@
 
 	
 	function onDocumentMouseDown( event ) {
-		//console.log( "pageX: " + event.pageX + " pageY: " + event.pageY + " window.innerWidth: " + window.innerWidth + " window.innerHeight: " + window.innerHeight );
 		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
 		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
 		
-		//console.log( "mousePos.x: " + mousePos.x + " mousePos.y: " + mousePos.y );
 		var popup = document.getElementById("myPopup");
 		const popupQuerySelector = "#popup";
 		const isClosest = event.target.closest(popupQuerySelector);
@@ -283,11 +271,6 @@
 			
 			popup.innerText = 'Anzahl Migrant*innen ' + intersects[ 0 ].object.name + " 2020: " + migrationsanzahl
 			popup.classList.toggle("show");
-			
-			//alert( intersects[ 0 ].object.name + ": " + intersects[ 0 ].object.anzahl);
-			//for all intersected objects, set color of line to red
-			//intersects[0].object.material.color.set( 0xff0000 );
-			
 		} 
 	}
 
@@ -359,7 +342,7 @@
 		  var geometry = new THREE.BufferGeometry().setFromPoints(pts);
 		  
 
-		  lineWidthScale = lineWidth * 0.00000001;
+		  lineWidthScale = lineWidth * 0.000000015;
 		  var line = new MeshLine()
 		  line.setGeometry(geometry);
 		  var arcMaterial = new MeshLineMaterial({
@@ -444,7 +427,6 @@
 	}
    
 	// Pie-Chart
-
 	function plotPieChart(migration) {
 		var countries = migration.map((m) => m.name);
 		var migrationCounts = migration.map((m) => m.anzahl);
