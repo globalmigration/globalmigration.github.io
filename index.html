@@ -151,7 +151,7 @@
 	var group = new THREE.Group();
 	var pointStart, pointEnd, newArc1, color;
 	var sphereRadius = 1;	
-
+	var material;
     function initialize() {
 		renderer = new THREE.WebGLRenderer( {antialias: true, alpha:true} );
 		renderer.setSize( window.innerWidth, window.innerHeight );
@@ -209,7 +209,7 @@
 				{ name: "Naher Osten - Europa", longitude: 30, latitude: 43, anzahl: 6124988, Migranten: 6124988, color:"#B69B02"},
 				{ name: "Zentralasien - Europa", longitude: 48, latitude: 70, anzahl: 8273134, Migranten: 8273134, color:"#FEFE33"},
 		]
-		pointStart = latlong2xyz(sphereRadius,50, 16); //immer gleich
+		pointStart = latlong2xyz(sphereRadius,55, 16); //immer gleich
 		
 		
 		for( var cur_region=0; cur_region < migration.length; cur_region++ ) {
@@ -239,7 +239,7 @@
 		controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
 		
 		window.addEventListener( 'resize', onWindowResized, false );
-		raycaster.params.Line.threshold = 0.1;
+		raycaster.params.Line.threshold = 0.01;
 		document.addEventListener( 'mousedown', onDocumentMouseDown );
 		document.addEventListener( 'mousemove', onDocumentMouseMove );
 
@@ -263,9 +263,8 @@
 		raycaster.setFromCamera( mousePos, camera );
 		var intersects = raycaster.intersectObjects( group.children );
 		
-		//popup.top = (mousePos.x);
-    	//popup.left = (mousePos.y);
 		// only if the ray intersects with an object
+			
 		if ( intersects.length > 0 ) {
 		//show message-box with name of intersected object
 			migrationsanzahl = intersects[ 0 ].object.anzahl.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -273,7 +272,8 @@
 			popup.innerText = 'Anzahl Migrant*innen ' + intersects[ 0 ].object.name + " 2020: " + migrationsanzahl
 			popup.classList.toggle("show");
 		} 
-	}
+
+	}	
 
 
 	function hoverLines(){
@@ -351,6 +351,10 @@
 			sizeAttenuation : true,
 			lineWidth : lineWidthScale,
 			alphaTest  : 0.1,
+			transparent: true,
+			dashArray: lineWidthScale,     // always has to be the double of the line
+			dashOffset: 0,    // start the dash at zero
+			dashRatio: 0.1,  // visible length range min: 0.99, max: 0.5
 		  });
 
 		  var arcMaterialWireframe = new MeshLineMaterial({
@@ -361,7 +365,8 @@
 			transparent: true,
 			opacity: 0.05,
 			//side: THREE.BackSide
-
+			
+			
 		  });
 		  
 		  //Arc
@@ -372,16 +377,31 @@
 		  arc.raycast = MeshLineRaycast;
 
 		  group.add( arc );	
-		  group.add( arcWireframe );	
+		  //group.add( arcWireframe );	
 		  
 		  
 		}
+	
+			function updateLine() {
+				// Check if the dash is out to stop animate it.
+				//if (group.children[0].material.dashOffset < -2) return;
 
+				// Decrement the dashOffset value to animate the path with the dash.
+				for (let i = 0; i < group.children.length; i++){
+					if(group.children[i].longitude < 0){
+				group.children[i].material.dashOffset -= 0.001;}
+					else{
+						group.children[i].material.dashOffset += 0.001;
+					}
+				}
+			}
+		
 	function animate() {
 		controls.update();
 		hoverLines();
 		renderer.render( scene, camera );
 		stats.update();
+		updateLine();
 		requestAnimationFrame( animate );
 	}
 
