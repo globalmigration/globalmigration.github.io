@@ -119,11 +119,11 @@
   </div>
 </div>
 
-<div  style="position: absolute; right: 2%; top: 0; height: 100%; width: 250px; z-index: 0">
+<div  style="position: absolute; right: 2%; top: -30px; height: 100%; width: 220px; z-index: 0">
 	<canvas id="myChart"></div>
 </div>
 
-<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Europa aufgeschlüsselt nach Regionen. </span>
+<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Dieser interaktive Globus stellt die Migrationsbewegungen nach Europa aufgeschlüsselt nach Weltregionen dar. </span>
 <span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
 <span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Deutschland und die wichtigsten Herkunftsländer. </span> 
 <div style="font-size:60%;color: rgb(149, 148, 148);position: absolute; bottom: 10px;">Datenquelle: Our World in Data/United Nations Department of Economic and Social Affairs</small></div>
@@ -236,7 +236,7 @@
 		controls.noZoom = false;
 		controls.noPan = false;
 		controls.dynamicDampingFactor = 0.3;
-		controls.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
+		controls.keys = [ 65 , 83, 68 ];
 		
 		window.addEventListener( 'resize', onWindowResized, false );
 		raycaster.params.Line.threshold = 0.01;
@@ -255,18 +255,14 @@
 		const popupQuerySelector = "#popup";
 		const isClosest = event.target.closest(popupQuerySelector);
 		
-		// If `isClosest` equals falsy & popup has the class `show`
-		// then hide the popup
 		if (!isClosest && popup.classList.contains("show")) {
 			popup.classList.remove("show");
 		}
 		raycaster.setFromCamera( mousePos, camera );
 		var intersects = raycaster.intersectObjects( group.children );
-		
-		// only if the ray intersects with an object
+	
 			
 		if ( intersects.length > 0 ) {
-		//show message-box with name of intersected object
 			migrationsanzahl = intersects[ 0 ].object.anzahl.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 			
 			popup.innerText = 'Anzahl Migrant*innen ' + intersects[ 0 ].object.name + " 2020: " + migrationsanzahl
@@ -323,7 +319,6 @@
 	}
 
 	function setArc3D(pointStart, longEnd, latEnd, smoothness, color, clockWise, lineWidth,name) {
-		  // calculate a normal ( taken from Geometry().computeFaceNormals() )
 		  pointEnd = latlong2xyz(sphereRadius,longEnd, latEnd);
 		  var cb = new THREE.Vector3(), ab = new THREE.Vector3(), normal = new THREE.Vector3();
 		  cb.subVectors(new THREE.Vector3(), pointEnd);
@@ -335,7 +330,6 @@
 		  if (clockWise) angle = angle - Math.PI * 2;  // if clockWise is true, then we'll go the longest path
 		  var angleDelta = angle / (smoothness - 1); // increment
 		
-		//var geometry = new THREE.Geometry();
 		var pts = [];
 		 for (var i = 0; i < smoothness; i++) {
 		    pts.push(pointStart.clone().applyAxisAngle(normal, angleDelta * i))
@@ -352,19 +346,18 @@
 			lineWidth : lineWidthScale,
 			alphaTest  : 0.1,
 			transparent: true,
-			dashArray: lineWidthScale,     // always has to be the double of the line
-			dashOffset: 0,    // start the dash at zero
-			dashRatio: 0.1,  // visible length range min: 0.99, max: 0.5
+			dashArray: lineWidthScale,     
+			dashOffset: 0,   
+			dashRatio: 0.1,  
 		  });
 
 		  var arcMaterialWireframe = new MeshLineMaterial({
 		    color: "#000",
 			sizeAttenuation : true,
 			lineWidth : lineWidthScale,
-			//wireframe: true,
 			transparent: true,
 			opacity: 0.05,
-			//side: THREE.BackSide
+		
 			
 			
 		  });
@@ -377,16 +370,11 @@
 		  arc.raycast = MeshLineRaycast;
 
 		  group.add( arc );	
-		  //group.add( arcWireframe );	
 		  
 		  
 		}
 	
 			function updateLine() {
-				// Check if the dash is out to stop animate it.
-				//if (group.children[0].material.dashOffset < -2) return;
-
-				// Decrement the dashOffset value to animate the path with the dash.
 				for (let i = 0; i < group.children.length; i++){
 					if(group.children[i].longitude < 0){
 				group.children[i].material.dashOffset -= 0.001;}
@@ -395,7 +383,7 @@
 					}
 				}
 			}
-		
+	// Migrationline Animation
 	function animate() {
 		controls.update();
 		hoverLines();
