@@ -102,15 +102,21 @@
 <!-- Buttos /HTML Interface -->
 <h1 style="position: absolute; left:42%; top: 6%; color: white;  padding-right: 30%; font-size: 230%; z-index: -1;"> Globale Migration</h1>
 
-<div style="position: absolute; left:10px; top: 10px; width: 220px;">
-	<div id="button1" onclick="highlightactive1(), changeTextureToPolitical()" class="button">
+<div style="position: absolute; left:10px; top: 10px; width: 280px;">
+	<div id="button1" onclick="highlightactive1(), changeTextureToRegional()" class="button">
 		Migration nach Europa
 	</div>
-	<div id="button2" onclick="highlightactive2(),changeTextureToPhysical()" class="button">
-		Migration nach Österreich
+	<div id="button2" onclick="highlightactive2(),changeTextureToAustria()" class="button">
+		Migration nach Österreich 2020
 	</div>
-	<div id="button3" onclick="highlightactive3(),changeTextureToOcean()" class="button">
-		Migration nach Deutschland
+	<div id="button4" onclick="highlightactive4(),changeTextureTooldAustria()" class="button">
+		Migration nach Österreich 2000
+	</div>
+	<div id="button3" onclick="highlightactive3(),changeTextureToGermany()" class="button">
+		Migration nach Deutschland 2020
+	</div>
+	<div id="button5" onclick="highlightactive5(),changeTextureTooldGermany()" class="button">
+		Migration nach Deutschland 2000
 	</div>
 </div>
 
@@ -123,9 +129,12 @@
 	<canvas id="myChart"></div>
 </div>
 
-<span id="description1" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Dieser interaktive Globus stellt die Migrationsbewegungen nach Europa aufgeschlüsselt nach Weltregionen dar. </span>
-<span id="description2" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Österreich und die wichtigsten Herkunftsländer. </span>
-<span id="description3" style="position: absolute; left:10px; top: 300px; width: 240px; display: none; color: white" >Migration nach Deutschland und die wichtigsten Herkunftsländer. </span> 
+<span id="description1" style="position: absolute; left:10px; top: 500px; width: 240px; display: none; color: white" >Dieser interaktive Globus stellt die Migrationsbewegungen nach Europa aufgeschlüsselt nach Weltregionen dar. </span>
+<span id="description2" style="position: absolute; left:10px; top: 500px; width: 240px; display: none; color: white" >Migration nach und von Österreich und die wichtigsten Herkunftsländer in 2020.  </span>
+<span id="description3" style="position: absolute; left:10px; top: 500px; width: 240px; display: none; color: white" >Migration nach und von Deutschland und die wichtigsten Herkunftsländer in 2020. </span> 
+<span id="description4" style="position: absolute; left:10px; top: 500px; width: 240px; display: none; color: white" >Migration nach und von Deutschland und die wichtigsten Herkunftsländer in 2000. </span> 
+<span id="description5" style="position: absolute; left:10px; top: 500px; width: 240px; display: none; color: white" >Migration nach und von Österreich und die wichtigsten Herkunftsländer in 2000. </span> 
+<span id="descriptionmig" style="position: absolute; left:10px; top: 1000px; width: 400px; display: none; color: white" >Je rötlicher die Farbe des Landes, desto höher die ist Zahl der von dort stammenden Migranten. Je bläulicher die Farbe des Landes, desto höher ist die Zahl der dorthin migrierenden Auswanderer.</span>
 <div style="font-size:60%;color: rgb(149, 148, 148);position: absolute; bottom: 10px;">Datenquelle: Our World in Data/United Nations Department of Economic and Social Affairs</small></div>
 
 
@@ -135,6 +144,7 @@
 <script src="js/TrackballControls.js"></script>
 <script src="js/stats.min.js"></script>
 <script src="js/three.MeshLine.js"></script>
+<script src="js/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	
 <script>
@@ -161,10 +171,13 @@
         scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 		
-		textureLoader = new THREE.TextureLoader();		
+		var textureLoader = new THREE.TextureLoader();		
         physical_texture = textureLoader.load('media/earth_surface_2048.jpg');
 		region_texture = textureLoader.load('media/regionmap.png');
-
+		germany_texture = textureLoader.load('media/ger2020.png');
+		austria_texture = textureLoader.load('media/aut2020.png');
+		old_germany_texture = textureLoader.load('media/ger2000.png');
+		old_austria_texture = textureLoader.load('media/aut2000.png');
                 mEarthMaterial = new THREE.MeshPhongMaterial(
 					{
 						map: region_texture,
@@ -230,7 +243,7 @@
 		plotPieChart(migration);
 				
 		controls = new THREE.TrackballControls( camera, renderer.domElement );
-		controls.rotateSpeed = 1.0;
+		controls.rotateSpeed = 6;
 		controls.zoomSpeed = 1.2;
 		controls.panSpeed = 0.8;
 		controls.noZoom = false;
@@ -246,7 +259,21 @@
         animate();
         }
 
-	
+	function changeTextureToRegional() {
+				mEarthMaterial.map = region_texture;
+		}
+	function changeTextureToGermany() {
+				mEarthMaterial.map = germany_texture;
+		}
+	function changeTextureToAustria() {
+				mEarthMaterial.map = austria_texture;
+		}
+		function changeTextureTooldGermany() {
+				mEarthMaterial.map = old_germany_texture;
+		}
+	function changeTextureTooldAustria() {
+				mEarthMaterial.map = old_austria_texture;
+		}
 	function onDocumentMouseDown( event ) {
 		mousePos.x = ( event.pageX / window.innerWidth ) * 2 - 1;
 		mousePos.y = - ( event.pageY / window.innerHeight ) * 2 + 1;
@@ -409,6 +436,9 @@
 		document.getElementById('description1').style.display = "block"; 
 		document.getElementById('description2').style.display = "none"; 
 		document.getElementById('description3').style.display = "none"; 
+		document.getElementById('description4').style.display = "none"; 
+		document.getElementById('description5').style.display = "none";
+		document.getElementById('descriptionmig').style.display = "none";
 		document.getElementById('myChart').style.display = "block"; 
 	}
 	function highlightactive2()
@@ -420,7 +450,12 @@
 		document.getElementById('description2').style.display = "block"; 
 		document.getElementById('description1').style.display = "none"; 
 		document.getElementById('description3').style.display = "none";
-		document.getElementById('myChart').style.display = "none"; 
+		document.getElementById('description4').style.display = "none"; 
+		document.getElementById('description5').style.display = "none";
+		document.getElementById('descriptionmig').style.display = "block";
+		document.getElementById('myChart').style.display = "none";
+	
+		
 	}
 	function highlightactive3()
 	{
@@ -429,9 +464,46 @@
 		document.getElementById('button1').style='';
 		document.getElementById('button2').style='';
 		document.getElementById('description3').style.display = "block"; 
-		document.getElementById('description1').style.display = "none"; 
+		document.getElementById('description1').style.display = "none";  
 		document.getElementById('description2').style.display = "none"; 
-		document.getElementById('myChart').style.display = "none"; 
+		document.getElementById('description4').style.display = "none"; 
+		document.getElementById('description5').style.display = "none";
+		document.getElementById('myChart').style.display = "none";
+		document.getElementById('descriptionmig').style.display = "block";
+		
+		
+	}
+
+	function highlightactive4()
+	{
+		document.getElementById('button3').style.color='rgb(6, 45, 24)';
+		document.getElementById('button3').style.fontWeight='bold';
+		document.getElementById('button1').style='';
+		document.getElementById('button2').style='';
+		document.getElementById('description4').style.display = "block"; 
+		document.getElementById('description3').style.display = "none"; 
+		document.getElementById('description1').style.display = "none";  
+		document.getElementById('description2').style.display = "none"; 
+		document.getElementById('myChart').style.display = "none";
+		document.getElementById('descriptionmig').style.display = "block";
+		
+		
+	}
+	function highlightactive5()
+	{
+		document.getElementById('button3').style.color='rgb(6, 45, 24)';
+		document.getElementById('button3').style.fontWeight='bold';
+		document.getElementById('button1').style='';
+		document.getElementById('button2').style='';
+		document.getElementById('description5').style.display = "block"; 
+		document.getElementById('description1').style.display = "none";  
+		document.getElementById('description2').style.display = "none"; 
+		document.getElementById('description3').style.display = "none";
+		document.getElementById('description4').style.display = "none";
+		document.getElementById('myChart').style.display = "none";
+		document.getElementById('descriptionmig').style.display = "block";
+		
+		
 	}
    
 	// Pie-Chart
